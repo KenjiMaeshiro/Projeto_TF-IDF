@@ -41,7 +41,7 @@ Cada registro do conjunto de dados inclui as seguintes colunas:
     \item \textbf{Helpful:} número de usuários que consideraram aquela avaliação útil.
 \end{itemize}
 
-O arquivo original foi disponibilizado em formato CSV compactado. Devido ao seu grande volume de informações, totalizando mais 6 milhões de registros. Para fins de processamento e viabilidade computacional, foi considerado apenas uma amostra de 100.000 de registros, extraída a partir do dataset completo. A extração foi feita no script chamado “Filtro” e a amostra foi salva em um novo arquivo denominado “reviews\_filtradas.csv”, que serviu de base para as etapas seguintes. 
+O arquivo original foi disponibilizado em formato CSV compactado. Devido ao seu grande volume de informações, totalizando mais 6 milhões de registros. Para fins de processamento e viabilidade computacional, foi considerado apenas uma amostra de 1.000.000 de registros, extraída a partir do dataset completo. A extração foi feita no script chamado “Filtro” e a amostra foi salva em um novo arquivo denominado “reviews\_filtradas.csv”, que serviu de base para as etapas seguintes. 
 
 A partir dessa amostra, foi realizado um filtro específico para o jogo de ID 10180, que corresponde ao título Call of Duty: Modern Warfare 2 (2009). Essa filtragem teve como finalidade concentrar o estudo em um único jogo bastante avaliado pelos usuários. 
 
@@ -59,7 +59,7 @@ Com essa representação vetorial, foi possível calcular o grau de similaridade
     \label{fig:print1}
 \end{figure}
 
-Inicialmente, realizou-se a redução do tamanho do conjunto de dados original para facilitar a análise. O arquivo original, lido através da biblioteca Pandas, era extenso, então optou-se por pegar uma amostra, pegando as primeiras 100.000 linhas. Essa seleção foi armazenada em um novo arquivo, nomeado "reviews\_filtradas.csv", que serviu como base para as fases seguintes do processo.
+Inicialmente, realizou-se a redução do tamanho do conjunto de dados original para facilitar a análise. O arquivo original, lido através da biblioteca Pandas, era extenso, então optou-se por pegar uma amostra, pegando as primeiras 1.000.000 linhas. Essa seleção foi armazenada em um novo arquivo, nomeado "reviews\_filtradas.csv", que serviu como base para as fases seguintes do processo.
 
 \begin{figure}[H]
     \centering
