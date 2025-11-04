@@ -25,9 +25,9 @@ df["Review_limpa"] = df["Review"].apply(limpar_review)
 print(df[["Review", "Review_limpa"]].head())
 
 vetorizador = TfidfVectorizer()
-matrix = vetorizador.fit_transform(df["Review_limpa"])
+reviews_matrix = vetorizador.fit_transform(df["Review_limpa"])
 indice = 0
-similaridade = cosine_similarity(matrix[indice], matrix)
+similaridade = cosine_similarity(reviews_matrix[indice], reviews_matrix)
 similaridades = list(enumerate(similaridade[indice]))
 similaridades = sorted(similaridades, key=lambda x: x[1], reverse = True)
 
@@ -35,4 +35,5 @@ print(f"\nBase Review 0: {df['Review_limpa'][0]}")
 print(f"\nTop 10 reviews mais parecidas:")
 for i, score in similaridades[1:11]:
     print(f"\nReview {i}: \n{df["Review_limpa"][i]} \n(similaridade: {score:.2f})")
+
 
