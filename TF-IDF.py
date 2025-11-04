@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-df = pd.read_csv("reviews_filtradas.csv", sep=',', decimal=',')
+df = pd.read_csv("steam.csv", sep=',', decimal=',')
 df = df.drop(columns=["1", "0"])
 df = df.rename(columns={"10": "id_jogo", "Ruined my life.": "Review"})
 df = df[df["id_jogo"] == 10180]
@@ -35,5 +35,6 @@ print(f"\nBase Review 0: {df['Review_limpa'][0]}")
 print(f"\nTop 10 reviews mais parecidas:")
 for i, score in similaridades[1:11]:
     print(f"\nReview {i}: \n{df["Review_limpa"][i]} \n(similaridade: {score:.2f})")
+
 
 
