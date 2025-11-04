@@ -1,0 +1,185 @@
+
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{float}
+\graphicspath{{Prints/}}
+\geometry{a4paper, margin=2.5cm}
+\setstretch{1.3}
+
+\begin{document}
+
+\begin{center}
+\textbf{\Large FACULDADE DE TECNOLOGIA DA BAIXADA SANTISTA – FATEC RUBENS LARA}\\[0.5cm]
+\textbf{\large CURSO DE CIÊNCIA DE DADOS}\\[3cm]
+
+\textbf{\LARGE ANÁLISE DE REVIEWS DA STEAM UTILIZANDO TF-IDF}\\[3cm]
+
+\textbf{Aluno:} Caio Kenji de Paula Maeshiro\\
+\textbf{Disciplina:} Álgebra Linear\\
+\textbf{Período:} 2º semestre de 2025\\[3cm]
+
+Santos – SP\\
+2025
+\end{center}
+
+\newpage
+\section*{Descrição do Dataset}
+
+O projeto tem como o objetivo a análise de um dataset composto por avaliações públicas da plataforma Steam. O dataset utilizado contém mais 6,4 milhões de reviews em inglês, disponibilizados de forma pública e anônima, reunindo informações sobre a opinião de usuários a respeito de diversos jogos disponíveis na plataforma.  
+
+Cada registro do conjunto de dados inclui as seguintes colunas:
+
+\begin{itemize}
+    \item \textbf{Review text:} o texto livre da avaliação feita pelo usuário;
+    \item \textbf{Game ID:} o identificador numérico do jogo ao qual a avaliação pertence;
+    \item \textbf{Sentiment:} o sentimento da review, podendo ser classificado como positivo ou negativo;
+    \item \textbf{Helpful:} número de usuários que consideraram aquela avaliação útil.
+\end{itemize}
+
+O arquivo original foi disponibilizado em formato CSV compactado. Devido ao seu grande volume de informações, totalizando mais 6 milhões de registros. Para fins de processamento e viabilidade computacional, foi considerado apenas uma amostra de 100.000 de registros, extraída a partir do dataset completo. A extração foi feita no script chamado “Filtro” e a amostra foi salva em um novo arquivo denominado “reviews\_filtradas.csv”, que serviu de base para as etapas seguintes. 
+
+A partir dessa amostra, foi realizado um filtro específico para o jogo de ID 10180, que corresponde ao título Call of Duty: Modern Warfare 2 (2009). Essa filtragem teve como finalidade concentrar o estudo em um único jogo bastante avaliado pelos usuários. 
+
+\section*{Tema do Projeto}
+
+Este trabalho se dedica fazer a análise de avaliações sobre o jogo Call of Duty: Modern Warfare 2 (2009), buscando descobrir as semelhanças entre a primeira avaliação registrada e as subsequentes. Para alcançar este objetivo, empregar-se o método TF-IDF (Term Frequency – Inverse Document Frequency), que transforma textos em dados numéricos com base na importância das palavras.
+
+Com essa representação vetorial, foi possível calcular o grau de similaridade entre as avaliações por meio da métrica de similaridade do cosseno, identificando quais reviews apresentam conteúdos mais próximos entre si. 
+
+\section*{Etapas Realizadas}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{print1}
+    \label{fig:print1}
+\end{figure}
+
+Inicialmente, realizou-se a redução do tamanho do conjunto de dados original para facilitar a análise. O arquivo original, lido através da biblioteca Pandas, era extenso, então optou-se por pegar uma amostra, pegando as primeiras 100.000 linhas. Essa seleção foi armazenada em um novo arquivo, nomeado "reviews\_filtradas.csv", que serviu como base para as fases seguintes do processo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{print2}
+    \label{fig:print2}
+\end{figure}
+
+Na sequência, os dados do arquivo passaram por um processo de leitura, limpeza e filtragem. Primeira, algumas colunas que não agregava ao projeto foram descartadas, enquanto outras receberam novos nomes para facilitar o entendimento do conjunto de dados. Em seguida, aplicou-se um filtro para isolar os dados do jogo com ID 10180, correspondente ao título Call of Duty: Modern Warfare 2 (2009), focando a análise nas opiniões sobre esse título específico.
+
+Após o filtro, todas as avaliações foram convertidas para o tipo texto, garantindo consistência na manipulação dos dados. Também foram removidas eventuais duplicatas, de modo a evitar que repetições influenciassem nos resultados. Por fim, o índice do conjunto de dados foi redefinido, resultando em um DataFrame limpo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{print3}
+    \label{fig:print3}
+\end{figure}
+
+Depois da filtragem de dados, foi realizado o tratamento do texto, buscando uniformizar e aprontar as avaliações para a análise quantitativa.
+
+Inicialmente, as stopwords da biblioteca NLTK (Natural Language Toolkit), que são palavras muito comuns no inglês, foram carregadas e ajustadas. Essas palavras foram removidas para que a análise se concentrasse nas palavras-chave das opiniões dos usuários.
+
+Em seguida, foi criada a função "limpar\_review". Essa função executa uma série de transformações:
+
+\begin{itemize}
+    \item \textbf{Converte todo o texto para letras minúsculas} garantindo uniformidade entre palavras semelhantes escritas de maneiras diferentes;
+    \item \textbf{Remove símbolos e caracteres especiais} como pontuações, números e códigos HTML;;
+    \item \textbf{Divide o texto em palavras isoladas} possibilitando o tratamento individual de cada termo;
+    \item \textbf{Elimina as stopwords} mantendo apenas as palavras de maior relevância semântica;
+    \item \textbf{Reagrupa o texto limpo} em uma nova forma padronizada.
+\end{itemize}
+
+O resultado desse processo foi colocado em uma nova coluna chamada Review\_limpa, que contém a versão processada de cada avaliação original. Essa coluna serviu de base para as etapas seguintes de vetorização e cálculo de similaridade.
+
+\begin{figure}[H] 
+    \centering
+    \includegraphics[width=0.9\textwidth]{print4}
+    \label{fig:print4}
+\end{figure}
+
+Com os textos já limpos, foi aplicada a técnica TF-IDF. A implementação foi feita utilizando o recurso TfidfVectorizer() da biblioteca scikit-learn, resultando em uma matriz esparsa, designada como reviews\_matrix.
+
+A seguir, empregou-se a função cosine\_similarity() para quantificar o nível de similaridade entre as diversas análises, com foco na primeira avaliação como a base de comparação. 
+
+Os resultados foram então colocados em ordem decrescente, o que facilitou a identificação de avaliações com conteúdo bastante similar à avaliação inicial, revelando tendências e assuntos recorrentes nas impressões dos jogadores.
+
+\begin{figure}[H] 
+    \centering
+    \includegraphics[width=0.9\textwidth]{print5}
+    \label{fig:print5}
+\end{figure}
+
+Por fim, o código exibe no terminal a review base utilizada como referência e as dez avaliações mais semelhantes encontradas pelo cálculo de similaridade do cosseno. O laço for percorre os índices e valores de similaridade armazenados na lista similaridades, apresentando para cada item o texto correspondente e o respectivo grau de semelhança numérica.
+
+\section*{Análise dos Resultados}
+
+Após empregar o método TF-IDF, calculou-se a similaridade de cosseno entre as opiniões sobre o jogo Call of Duty: Modern Warfare 2 (2009). A intenção era descobrir quais análises mostravam uma ligação semântica mais forte com a primeira análise (posição 0).
+
+A avaliação base selecionada pelo código foi: 
+
+\begin{quote}
+\textbf{Base Review 0:}\\
+``makarov thought saw ghost got spooked dropped soap soon paid price''
+\end{quote}
+
+\subsection*{Resultado das 10 avaliações mais semelhantes}
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+\textbf{Posição} & \textbf{Índice} & \textbf{Trecho da Review} & \textbf{Similaridade} \\
+\midrule
+1 & 2961 & ive played almost every call duty title... selling soap... & 0.24 \\
+2 & 1492 & revenge ghost roach die soap price kill shepherd lol & 0.24 \\
+3 & 2681 & better ghost & 0.23 \\
+4 & 1759 & dont drop soap price decrease & 0.20 \\
+5 & 1129 & rip ghost & 0.19 \\
+6 & 3416 & got & 0.18 \\
+7 & 2581 & great game rip ghost & 0.18 \\
+8 & 4731 & people used play ghost game & 0.18 \\
+9 & 3655 & dont drop soap & 0.17 \\
+10 & 5065 & bought played thing saw multiplayer explosions... & 0.17 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Interpretação das Similaridades}
+
+Os valores de similaridade variam entre 0.17 e 0.24, indicando um nível moderado de proximidade semântica, que já era esperado, pois as reviews são curtas, escritas de forma informal e com vocabulário variado. Assim, faz com que o TF-IDF encontre poucas palavras idênticas entre os textos.
+
+O TF-IDF atribui maior relevância às palavras que aparecem com frequência no documento. Dessa forma, as palavras como “ghost”, “soap”, “price” e “makarov” adquiriram grande relevância e tiveram um impacto significativo nas semelhanças identificadas.
+
+As avaliações mais próximas exibem uma grande concordância nos principais termos, além de citarem personagens e eventos semelhantes do jogos, o que justifica a similaridade próxima de 0.24.
+
+Abaixo estão os ângulos das 10 reviews com o maior cálculo da similaridade do cosseno: 
+
+\subsection*{Ângulos correspondentes às similaridades}
+
+\begin{center}
+\begin{tabular}{cc}
+\toprule
+\textbf{Similaridade} & \textbf{Ângulo aproximado} \\
+\midrule
+0.24 & 76,1° \\
+0.23 & 76,7° \\
+0.20 & 78,5° \\
+0.19 & 79,0° \\
+0.18 & 79,6° \\
+0.17 & 80,2° \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Os resultados mostram que as reviews não são idênticas, mas compartilham informações e termos do jogo em comum,  principalmente os personagens “Ghost” e “Soap”. 
+
+\section*{Conclusão}
+
+O projeto demonstrou a eficácia do uso combinado das técnicas TF-IDF e similaridade de cosseno para identificar as similaridades das avaliações de usuários ao jogo Call of Duty Modern Warfare 2 (2009).
+
+A análise mostrou que é possível detectar termos comuns e padrões de linguagem entre diferentes review. Mesmo sendo avaliações curtas e informais.
+\end{document}
